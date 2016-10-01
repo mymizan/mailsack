@@ -23,10 +23,14 @@ class Mailsack_Server(smtpd.SMTPServer):
     def process_message(self, *args, **kwargs):
         self.print_message(*args, **kwargs)
 
+    def notify_client():
+        pass
+
 
 if __name__ == '__main__':
     try:
         mailsack = Mailsack_Server(('localhost', 25), None)
+        print("Server listening on port 25")
     except(PermissionError):
         print("Can not bind to port 25. Please, run as root")
         sys.exit()
