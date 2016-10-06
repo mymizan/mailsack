@@ -2,6 +2,9 @@
 """Dummy SMTP Server"""
 
 import asyncore
+import sockserver
+import threading
+import argparse
 import smtpd
 import sys
 
@@ -9,30 +12,40 @@ class Mailsack_Server(smtpd.SMTPServer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.mail_list = []
 
-    def save_message(*args, **kwargs):
-        pass
+    def save_message(self, mail):
+        self.mail_list.append(mail)
 
-    def print_message(*args, **kwargs):
-        print("From: ", args[2], "\n"
-               "To: ", args[3], "\n"
-               "Body: ", args[4], "\n"
-            )
+    def print_message(self, mail):
+        print(mail)
         print("----------END--------------\n")
 
     def process_message(self, *args, **kwargs):
-        self.print_message(*args, **kwargs)
+        mail = "From: " + args[1] + "\n" + "To: " + str(args[2]) + "\n" "Body: " + args[3] + "\n"
+        self.save_message(mail)
+        self.print_message(mail)
 
-    def notify_client():
+    def client_listener():
         pass
 
-
 if __name__ == '__main__':
+    #get default arguments
     try:
-        mailsack = Mailsack_Server(('localhost', 25), None)
-        print("Server listening on port 25")
+        parser = argparse.ArgumentParser(description='')
+        parser.add_argument('--host', default='localhost', help='local IP address to listen to')
+        parser.add_argument('--port', default='25', help='port to listen')
+
+        args = parser.parse_args()
+        args = vars(args)
+    except:
+        print("Invalid arguments")
+        sys.exit()
+    try:
+        mailsack = Mailsack_Server((args['host'], int(args['port'])), None)
+        print("Server listening on port ", args['port'])
     except(PermissionError):
-        print("Can not bind to port 25. Please, run as root")
+        print("Can not bind to port " + args['port'] + ". Please, run as root")
         sys.exit()
 
     try:
