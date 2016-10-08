@@ -2,11 +2,11 @@
 """Dummy SMTP Server"""
 
 import asyncore
-import sockserver
 import threading
 import argparse
 import smtpd
 import sys
+from sockserver import *
 
 class Mailsack_Server(smtpd.SMTPServer):
 
@@ -48,11 +48,8 @@ if __name__ == '__main__':
 
     # listen for incoming connection from GUI
     if args['listen'] != 'None':
-        try:
-            sockserver = SockServer(args['host'], int(args['listen']))
-            sockserver.listen()
-        except:
-            print("Can not start socket server. Incoming connections from the UI will be denied.")
+        #todo: implement client functionality
+        pass
 
     try:
         asyncore.loop()
